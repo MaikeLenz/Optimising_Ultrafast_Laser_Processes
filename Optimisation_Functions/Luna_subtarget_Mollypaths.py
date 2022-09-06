@@ -3,10 +3,8 @@ import sys
 
 sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Tools\\')
 from rms_width import *
-from angfreq_to_time import *
 from get_phase import *
 from envelopes import *
-
 
 from scipy.optimize import curve_fit
 import numpy as np 
@@ -109,12 +107,6 @@ def max_peak_power_300nm(om,Eom):
     #plt.plot(λ, np.abs(Eom_smooth)**2)
     #plt.show()
     # Now Fourier transform
-    """
-    f = []
-    for i in range(len(λ)):
-        f.append(c/λ[i])
-    t_filtered, I_filtered = f_to_t(f[::-1], Iλ_smooth[::-1])
-    """
     Et = np.fft.ifft(Eom_smooth)
     return max(np.abs(Et)**2)
 
@@ -130,12 +122,6 @@ def max_peak_power_300nm_envelope(om,Eom):
     #plt.plot(λ, np.abs(Eom_smooth)**2)
     #plt.show()
     # Now Fourier transform
-    """
-    f = []
-    for i in range(len(λ)):
-        f.append(c/λ[i])
-    t_filtered, I_filtered = f_to_t(f[::-1], Iλ_smooth[::-1])
-    """
     Et = np.fft.ifft(Eom_smooth)
     dom = om[2] - om[1]
     df = dom/(2*np.pi)
@@ -156,12 +142,6 @@ def max_peak_power_1300nm(om,Eom):
     #plt.plot(λ, np.abs(Eom_smooth)**2)
     #plt.show()
     # Now Fourier transform
-    """
-    f = []
-    for i in range(len(λ)):
-        f.append(c/λ[i])
-    t_filtered, I_filtered = f_to_t(f[::-1], Iλ_smooth[::-1])
-    """
     Et = np.fft.ifft(Eom_smooth)
     return max(np.abs(Et)**2)
 
@@ -177,12 +157,6 @@ def max_peak_power_1200nm(om,Eom):
     #plt.plot(λ, np.abs(Eom_smooth)**2)
     #plt.show()
     # Now Fourier transform
-    """
-    f = []
-    for i in range(len(λ)):
-        f.append(c/λ[i])
-    t_filtered, I_filtered = f_to_t(f[::-1], Iλ_smooth[::-1])
-    """
     Et = np.fft.ifft(Eom_smooth)
     return max(np.abs(Et)**2)
 """

@@ -20,10 +20,3 @@ def compressor_grating_values(angle_of_incidence_deg=30.8, grating_line_density_
     GDD = -((N*(m**2)*(wavel_m**3)*L)/(2*np.pi*(c**2)*(d**2))) * ((1 - ((-m*(wavel_m/d) - np.sin(theta))**2))**(-3/2))
     TOD = -((3*wavel_m)/(2*np.pi*c))*((1 + (wavel_m/d)*np.sin(theta) - (np.sin(theta)**2))/(1 - ((wavel_m/d) - np.sin(theta))**2)) * GDD
     return GDD, TOD
-
-"""
-GDD, TOD = compressor_grating_values(grating_pair_displacement_mm=3.937495614034377e-06*1000)
-print(GDD*(10**30))
-print(TOD*(10**45))
-
-"""

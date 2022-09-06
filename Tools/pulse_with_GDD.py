@@ -1,15 +1,18 @@
-# -*- coding: utf-8 -*-
 """
 Created on Thu Nov 28 11:55:57 2019
 
 @author: jt
 """
-
+##############################################################################################################################
+# Imports
 import numpy as np
 import matplotlib.pylab as plt
+##############################################################################################################################
+# Functions
 
 def efield_time_domain(t, amp, om0, dom, t0, gdd, cep):
-    """ returns time domain e_efield (real)
+    """ 
+    returns time domain e_efield (real)
     t is time axis
     amp is pulse amplitude
     om0 is centre frequency
@@ -24,7 +27,8 @@ def efield_time_domain(t, amp, om0, dom, t0, gdd, cep):
 
 
 def efield_freq_domain(t, amp, om0, dom, t0, gdd, cep):
-    """ returns freq domain e_field (real) by fourier transforming time domain
+    """ 
+    returns freq domain e_field (real) by fourier transforming time domain
     t is time axis
     amp is pulse amplitude
     om0 is centre frequency
@@ -41,6 +45,9 @@ def efield_freq_domain(t, amp, om0, dom, t0, gdd, cep):
     return np.real(E_omega), omega
 
 def get_phi(omega, omega0, CEP, GD, GDD, TOD, FoOD, FiOD):
+    """
+    Calculates the phase
+    """
     return CEP + GD*(omega-omega0) + (1/2)*GDD*(omega-omega0)**2 + (1/6)*TOD*(omega-omega0)**3 + (1/24)*FoOD*(omega-omega0)**4 + (1/120)*FiOD*(omega-omega0)**5
 
 def E_field_freq(omega, GD=0.0, wavel=1000, domega=2, amp=1, CEP=0, GDD=0, TOD=0, FoOD=0, FiOD=0):
