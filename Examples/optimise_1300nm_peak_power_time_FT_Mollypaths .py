@@ -1,8 +1,7 @@
 import sys
 import csv
-#sys.path.append('C:\\Users\\ML\\OneDrive - Imperial College London\\MSci_Project\\code\\Synth\\Optimising-Field-Synthesiser\\HCF sim\\Python\\Luna_BO\\')
-sys.path.append('C:\\Users\\iammo\\Documents\\Optimising-Field-Synthesiser\\HCF sim\\Python\\Luna_BO\\')
-from bossfunction_Luna_debugging_Mollypaths import *
+sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Optimisation_Functions\\')
+from OptimisationFunction import *
 
 params=["energy", "pressure", "grating_pair_displacement", "radius", "flength"]
 
@@ -23,7 +22,7 @@ initial_values_HCF=[radius, flength, gas,pressure_init, wavel, energy_init,durat
 
 inits=1
 iters=1
-result,iterations=Luna_BO_debug(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, init_points=inits, n_iter=iters)
+result,iterations=Luna_BO(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, init_points=inits, n_iter=iters)
 target = result['target']
 grating=result["params"]["grating_pair_displacement"]
 pressure=result["params"]["pressure"]
