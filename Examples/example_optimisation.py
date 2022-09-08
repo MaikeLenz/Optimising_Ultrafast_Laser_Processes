@@ -37,7 +37,7 @@ energy = result["params"]["energy"]
 radius = result["params"]["radius"]
 flength = result["params"]["flength"]
 
-# Below is a suggestion for how the results can be saved in a csv file
+# Below is a suggestion for how the final optimal parameters can be saved in a csv file
 savefile_name = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\example_optimisation_results.csv'
 header = ['init_points', 'n_iter', 'peak power', 'energy, J', 'pressure, bar', 'radius, m', 'flength, m', 'FWHM, s', 'wavel, m', 'gas', 'grating_pair_displacement, m']
 with open(savefile_name, 'w', encoding='UTF8', newline='') as f:
