@@ -8,6 +8,7 @@ It relies on the installation of two packages:
 The Luna package simulates the physics that occurs within a hollow-core fibre.
 2) https://github.com/fmfn/BayesianOptimization
 The Bayesian optimisation module is used to optimise the experiment.
+
 For details on the installation of these packages and our notes on the installation process please see the getting started section below and the respective github repositries.
 
 ## Getting Started
