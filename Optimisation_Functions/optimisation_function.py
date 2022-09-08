@@ -18,7 +18,7 @@ import sys
 sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Optimisation_Functions\\')
 sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Tools\\')
 from pulse_with_GDD import *
-from Luna_subtarget_Mollypaths import *
+from subtarget_functions import *
 from compressor_grating_to_values import *
 
 #filepath = 'C:\\Users\\iammo\\Documents\\'
