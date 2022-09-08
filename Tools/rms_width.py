@@ -1,8 +1,5 @@
-# Imports
 import numpy as np
 from scipy import integrate
-##############################################################################################################################
-# Functions
 
 def moment(x,y,n): 
     """
