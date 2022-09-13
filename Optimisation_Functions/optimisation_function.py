@@ -18,6 +18,7 @@ from julia import Main
 
 import sys
 
+#path to github repository
 #path_to_repo='C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
 path_to_repo='D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
 
