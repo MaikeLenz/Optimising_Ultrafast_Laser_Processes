@@ -1,6 +1,10 @@
 import sys
 import csv
-sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Optimisation_Functions\\')
+
+path_to_repo = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
+#path_to_repo = 'D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
+
+sys.path.append(path_to_repo+'Optimisation_Functions\\')
 from optimisation_function import *
 
 # First choose the paramters you wish to vary
@@ -38,7 +42,7 @@ radius = result["params"]["radius"]
 flength = result["params"]["flength"]
 
 # Below is a suggestion for how the final optimal parameters can be saved in a csv file
-savefile_name = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\example_optimisation_results.csv'
+savefile_name = path_to_repo+'example_optimisation_results.csv'
 header = ['init_points', 'n_iter', 'peak power', 'energy, J', 'pressure, bar', 'radius, m', 'flength, m', 'FWHM, s', 'wavel, m', 'gas', 'grating_pair_displacement, m']
 with open(savefile_name, 'w', encoding='UTF8', newline='') as f:
     writer = csv.writer(f)
