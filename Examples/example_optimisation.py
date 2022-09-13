@@ -1,8 +1,8 @@
 import sys
 import csv
 
-path_to_repo = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
-#path_to_repo = 'D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
+#path_to_repo = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
+path_to_repo = 'D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
 
 sys.path.append(path_to_repo+'Optimisation_Functions\\')
 from optimisation_function import *

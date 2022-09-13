@@ -10,18 +10,23 @@ import matplotlib.pyplot as plt
 import julia
 
 # Add your Julia path here
-#julia.Julia(runtime="C:\\Users\\ML\\AppData\\Local\\Programs\\Julia-1.7.0\\bin\\julia.exe")
-julia.Julia(runtime="C:\\Users\\iammo\\AppData\\Local\\Programs\\Julia-1.7.1\\bin\\julia.exe")
+#julia_path="C:\\Users\\iammo\\AppData\\Local\\Programs\\Julia-1.7.1\\bin\\julia.exe"
+julia_path="C:\\Users\\ML\\AppData\\Local\\Programs\\Julia-1.7.0\\bin\\julia.exe"
+
+julia.Julia(runtime=julia_path)
 from julia import Main
 
 import sys
-sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Optimisation_Functions\\')
-sys.path.append('C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\Tools\\')
+
+#path_to_repo='C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
+path_to_repo='D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
+
+sys.path.append(path_to_repo+'Optimisation_Functions\\')
+sys.path.append(path_to_repo+'Tools\\')
 from pulse_with_GDD import *
 from subtarget_functions import *
 from compressor_grating_to_values import *
 
-#filepath = 'C:\\Users\\iammo\\Documents\\'
 ##############################################################################################################################
 c = 299792458 # m/s
 
