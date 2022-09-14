@@ -8,7 +8,6 @@ sys.path.append(path_to_repo+'Optimisation_Functions\\')
 from optimisation_function import *
 
 # First choose the paramters you wish to vary
-# Values:  radius, flength, gas, pressure, wavelength, energy, τfwhm, grating_pair_separation
 params=["energy", "pressure", "grating_pair_displacement", "radius", "flength"]
 
 # Define experimental parameters
