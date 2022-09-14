@@ -33,7 +33,8 @@ inits = 1
 iters = 1
 
 # Run the optimisation function
-result, iterations = Luna_BO(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, init_points=inits, n_iter=iters, parameter_bounds=bounds)
+result, iterations = Luna_BO(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, 
+                            init_points=inits, n_iter=iters, parameter_bounds=bounds, subtarget_analysis="f")
 # result contains only the final optimal parameters. iterations contains the optimal parameters found after every iteration of the optimisation function.
 
 # Extract results
