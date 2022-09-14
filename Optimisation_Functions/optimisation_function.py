@@ -7,6 +7,7 @@
 import numpy as np
 from bayes_opt import BayesianOptimization
 import matplotlib.pyplot as plt
+import csv
 import julia
 
 # Add your Julia path here
@@ -33,7 +34,8 @@ c = 299792458 # m/s
 
 def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50, subtarget_analysis = "f", 
     Gaussian = False, ImperialLab = False, parameter_bounds = None, 
-    t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None):     
+    t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None,
+    record_iterations = False, save_path = None):     
     """
     performs BO with params as specified as strings in params input (params is list of strings) on the HCF.
     init_points: number of initial BO points
@@ -238,14 +240,52 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
         optimizer.probe(params={"energy": 1.1e-3, "pressure": 0.66*3.5, "grating_pair_displacement":0.0},lazy=True,)
         #optimizer.probe(params={"grating_pair_displacement":0.0},lazy=True,)
 
+    if record_iterations == True:
+        # If True, csv files will be saved with the optimums during the optimisation, and the points probed during the initial random search and the optimisation
+        # First probe the initial points
+        optimizer.maximize(
+            init_points=init_points,
+            n_iter=0,
+            )
+        columns = ['iteration', 'target']
+        for key, value in args_BO.items():
+            columns.append(key)
+        with open(save_path + '_optimums.csv', 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(columns)
+        
+        # Now probe each iteration and record the results
+        for i in range(n_iter):
+            optimizer.maximize(
+            init_points=0,
+            n_iter=1,
+            )
+            result = optimizer.max
+            with open(save_path + '_optimums.csv', 'a', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                row = [i, result["target"]]
+                for key, value in args_BO.items():
+                    row.append(result["params"][key])
+                writer.writerow(row)
 
-    optimizer.maximize(
-        #maximises the target function output. In the case of the RMS error functions, this is a minimisation because the errors are multiuplied by -1
-        init_points=init_points,
-        n_iter=n_iter,
-        #acq="ucb", 
-        #kappa=0.1
-        )
+        # Record all points probed
+        iterations = optimizer.res
+        with open(save_path + '_points_probed.csv', 'w', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(columns)
+            for i, res in enumerate(iterations):
+                row = [i, res["target"]]
+                for key, value in args_BO.items():
+                    row.append(res["params"][key])
+                writer.writerow(row)
+    else:
+        optimizer.maximize(
+            #maximises the target function output. In the case of the RMS error functions, this is a minimisation because the errors are multiuplied by -1
+            init_points=init_points,
+            n_iter=n_iter,
+            #acq="ucb", 
+            #kappa=0.1
+            )
 
     print(optimizer.max) #final parameters
     results=optimizer.max["params"]
