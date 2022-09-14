@@ -133,7 +133,8 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
                 # Get experimental input spectrum, scale energy and apply phase
                 lines=[]
                 columns=[[],[],[],[],[],[],[],[],[],[],[]]
-                with open (filepath+'Optimising-Field-Synthesiser\\HCF sim\\Python\\experiments\\HCF_scans\\power in\\Input_Power_Scan.txt', 'rt') as myfile:  # Open lorem.txt for reading
+                ### NEED TO FIX PATH IN LINE BELOW
+                with open (path_to_repo+'Imperial_Lab_Data\\Input_Power_Scan.txt', 'rt') as myfile:  # Open lorem.txt for reading
                     for myline in myfile:
                         lines.append(myline)
 
@@ -328,7 +329,7 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
                 # Get experimental input spectrum, scale energy and apply phase
                 lines=[]
                 columns=[[],[],[],[],[],[],[],[],[],[],[]]
-                with open (filepath+'Optimising-Field-Synthesiser\\HCF sim\\Python\\experiments\\HCF_scans\\power in\\Input_Power_Scan.txt', 'rt') as myfile:  # Open lorem.txt for reading
+                with open (path_to_repo+'Imperial_Lab_Data\\Input_Power_Scan.txt', 'rt') as myfile:  # Open lorem.txt for reading
                     for myline in myfile:
                         lines.append(myline)
 
