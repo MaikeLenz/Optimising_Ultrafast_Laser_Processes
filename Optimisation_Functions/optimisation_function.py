@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import julia
 
 # Add your Julia path here
-#julia_path="C:\\Users\\iammo\\AppData\\Local\\Programs\\Julia-1.7.1\\bin\\julia.exe"
-julia_path="C:\\Users\\ML\\AppData\\Local\\Programs\\Julia-1.7.0\\bin\\julia.exe"
+julia_path="C:\\Users\\iammo\\AppData\\Local\\Programs\\Julia-1.7.1\\bin\\julia.exe"
+#julia_path="C:\\Users\\ML\\AppData\\Local\\Programs\\Julia-1.7.0\\bin\\julia.exe"
 
 julia.Julia(runtime=julia_path)
 from julia import Main
@@ -19,8 +19,8 @@ from julia import Main
 import sys
 
 #path to github repository
-#path_to_repo='C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
-path_to_repo='D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
+path_to_repo='C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
+#path_to_repo='D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
 
 sys.path.append(path_to_repo+'Optimisation_Functions\\')
 sys.path.append(path_to_repo+'Tools\\')
@@ -31,7 +31,8 @@ from compressor_grating_to_values import *
 ##############################################################################################################################
 c = 299792458 # m/s
 
-def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab = False, init_points=50, n_iter=50, t=np.linspace(-20,100,20000), plotting=True, wavel_bounds=None):     
+def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab = False, init_points = 50, n_iter = 50, 
+    parameter_bounds = None, t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None):     
     """
     performs BO with params as specified as strings in params input (params is list of strings) on the HCF.
     init_points: number of initial BO points
@@ -191,48 +192,50 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
         else:
             return function(λ, Iλ)#*power_condition #pass t and E to sub-target function
         
+    if parameter_bounds == None:
+        # Make pbounds dictionary
+        pbounds = {}
+        for i in params:
+            #assume standard bounds
+            if 'energy' in i:
+                #pbounds[i] = (0,1e-3)
+                #pbounds[i] = (0.1e-3,2.0e-3)
+                pbounds[i] = (0.5e-3, 1.5e-3)
+                #pbounds[i] = (0.5e-3, 0.8e-3)
+
+            elif 'FWHM' in i:
+                #pbounds[i] = (20e-15,50e-15)
+                #pbounds[i] = (4e-15, 30e-15)
+                pbounds[i] = (20e-15, 35e-15)
+            elif 'λ0' in i:
+                pbounds[i] = (700e-9,900e-9)
+            elif 'pressure' in i:
+                #pbounds[i] = (0,3)
+                #pbounds[i] = (1,15)
+                #pbounds[i] = (1, 10)
+                #pbounds[i] = (0.5, 3.5)
+                if params_dict["gas_str"]=="He":
+                    pbounds[i]=(0.66*1.0,8.0*0.66)
+
+                if params_dict['gas_str']=="Ar":
+                    pbounds[i] = (0.66*0.6, 0.66*1.5)
         
-    # Make pbounds dictionary
-    pbounds = {}
-    for i in params:
-        #assume standard bounds
-        if 'energy' in i:
-            #pbounds[i] = (0,1e-3)
-            #pbounds[i] = (0.1e-3,2.0e-3)
-            pbounds[i] = (0.5e-3, 1.5e-3)
-            #pbounds[i] = (0.5e-3, 0.8e-3)
-
-        elif 'FWHM' in i:
-            #pbounds[i] = (20e-15,50e-15)
-            #pbounds[i] = (4e-15, 30e-15)
-            pbounds[i] = (20e-15, 35e-15)
-        elif 'λ0' in i:
-            pbounds[i] = (700e-9,900e-9)
-        elif 'pressure' in i:
-            #pbounds[i] = (0,3)
-            #pbounds[i] = (1,15)
-            #pbounds[i] = (1, 10)
-            #pbounds[i] = (0.5, 3.5)
-            if params_dict["gas_str"]=="He":
-                pbounds[i]=(0.66*1.0,8.0*0.66)
-
-            if params_dict['gas_str']=="Ar":
-                pbounds[i] = (0.66*0.6, 0.66*1.5)
-    
-            elif params_dict['gas_str']=="Ne":
-                pbounds[i] = (0.66*3.0, 0.66*3.5)
+                elif params_dict['gas_str']=="Ne":
+                    pbounds[i] = (0.66*3.0, 0.66*3.5)
 
 
-        elif 'radius' in i:                
-            #pbounds[i] = (125e-6,300e-6)
-            pbounds[i] = (50e-6, 500e-6)
-        elif 'flength' in i:
-            #pbounds[i] = (1,2)
-            pbounds[i] = (0.1, 10)
-        elif 'grating_pair_displacement' in i:
-            #pbounds[i] = (-0.5e-3, 0.5e-3)
-            #pbounds[i] = (-0.5e-3, 0.5e-3)
-            pbounds[i] = (-0.5e-3, 0.5e-3)
+            elif 'radius' in i:                
+                #pbounds[i] = (125e-6,300e-6)
+                pbounds[i] = (50e-6, 500e-6)
+            elif 'flength' in i:
+                #pbounds[i] = (1,2)
+                pbounds[i] = (0.1, 10)
+            elif 'grating_pair_displacement' in i:
+                #pbounds[i] = (-0.5e-3, 0.5e-3)
+                #pbounds[i] = (-0.5e-3, 0.5e-3)
+                pbounds[i] = (-0.5e-3, 0.5e-3)
+    else:
+        pbounds = parameter_bounds
 
     print(pbounds)
 

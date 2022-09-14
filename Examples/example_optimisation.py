@@ -1,8 +1,8 @@
 import sys
 import csv
 
-#path_to_repo = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
-path_to_repo = 'D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
+path_to_repo = 'C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
+#path_to_repo = 'D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
 
 sys.path.append(path_to_repo+'Optimisation_Functions\\')
 from optimisation_function import *
@@ -23,13 +23,17 @@ grating_init = 0 # Compressor grating separation
 
 initial_values_HCF = [radius, flength, gas, pressure_init, wavel, energy_init, duration, grating_init] # These values must remain in the order given here to be passed into the optimisation function
 
+# You can also choose the bounds of the parameters to vary and specify these in a dictionary
+# If no bounds are chosen, the optimisation will use the default parameter bounds
+bounds = {"energy":(0.5e-3, 1.5e-3), "pressure":(0.66*1.0,8.0*0.66), "grating_pair_displacement":(-0.5e-3, 0.5e-3), "radius":(50e-6, 500e-6), "flength":(0.1, 10)}
+
 # Choose the number of initial points and number of iterations for Bayesian optimisation to run for
 # We would recommend starting with one initial point and one iteration to test the optimisation function
 inits = 1
 iters = 1
 
 # Run the optimisation function
-result, iterations = Luna_BO(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, init_points=inits, n_iter=iters)
+result, iterations = Luna_BO(params, initial_values_HCF, function=max_peak_power_1300nm_quadratic_phase, init_points=inits, n_iter=iters, parameter_bounds=bounds)
 # result contains only the final optimal parameters. iterations contains the optimal parameters found after every iteration of the optimisation function.
 
 # Extract results
