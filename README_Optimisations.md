@@ -17,12 +17,16 @@ This takes the following arguments:
 - **init_points**. The number of initial random searches in parameter that are carried out before optimising. This is optional; the default is set to 50.
 - **n_iter**. The number of iterations of the optimisation that are going to be carried out. This is optional; teh default is set to 50.
 - **subtarget_analysis**. This determines whether the subtarget function will be carried out in terms of wavelength or frequency. It can be set to either "f" for frequency or "w" for wavelength. This is optional; the default is frequency.
-
+- **Gaussian**. This is a boolean. If false, a custom input electric field is defined in frequency with spectral phase. This is found from the compressor grating separation. If true, a default Gaussian pulse shape in frequency is used.
+- **ImperialLab**. This is a boolean. If true, experimentally measured input spectra with spectral phase as calculated from the compressor grating separation are passed into Luna. If false, the spectral spread is calculated from the FWHM duration of the pulse and spectral phase is again calculated from the compressor grating separation.
+- **parameter_bounds**. This is a boolean. If false, default parameter bounds are used which are defined in optimisation_function.py. If true, the selected bounds are used instead.
 
 Inside the Luna_BO function, a native target function is defined which will return the value to be optimised. This is essentially just the subtarget function that was selected but with the correct arguments.
 
-Luna_BO returns
+
+Luna_BO returns:
 - **Results**. This is a dictionary of the final parameters which can be accessed as e.g. results["params"]["grating_pair_displacement"] or
 results["params"]["pressure"] and also the final output of the subtarget function which can be accessed as results['target'].
 - **Iterations**. This every point in parameter space that was probed by the optimisation.
+
 
