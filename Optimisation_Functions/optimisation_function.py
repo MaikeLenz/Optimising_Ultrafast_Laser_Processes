@@ -31,8 +31,9 @@ from compressor_grating_to_values import *
 ##############################################################################################################################
 c = 299792458 # m/s
 
-def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab = False, init_points = 50, n_iter = 50, 
-    parameter_bounds = None, t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None):     
+def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50, subtarget_analysis = "f", 
+    Gaussian = False, ImperialLab = False, parameter_bounds = None, 
+    t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None):     
     """
     performs BO with params as specified as strings in params input (params is list of strings) on the HCF.
     init_points: number of initial BO points
@@ -109,7 +110,7 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
     
         if Gaussian == False:
             if ImperialLab == False:
-                #Custom data pulse is defined and passed to prop capillary
+                # Custom data pulse is defined and passed to prop capillary
                 domega = 2*np.pi*0.44/τfwhm
                 c=299792458
                 omega = np.linspace(2*np.pi*c/params_dict["λ0"] - 5*domega/2, 2*np.pi*c/params_dict["λ0"] + 5*domega/2, 1000)
@@ -135,7 +136,6 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
                         lines.append(myline)
 
                 c = 299792458 # m/s
-                #print(lines[:22])
                 data=lines[22:] #gets rid of all the stuff at the top
                 data=data[int(len(data)/2):]
                 for i in data:
@@ -159,7 +159,7 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
                 Main.duv = Main.eval('duv = prop_capillary(radius, flength, gas, pressure; λ0, pulses=pulse, trange=400e-15, λlims=(150e-9, 4e-6))')
                 
         else:
-            #default gaussian pulse passed to prop capillary
+            # Default Gaussian pulse passed to prop capillary
             Main.duv = Main.eval('duv = prop_capillary(radius, flength, gas, pressure; λ0, τfwhm, energy, trange=400e-15, λlims=(150e-9, 4e-6))')
 
         Main.eval("λ, Iλ = Processing.getIω(duv, :λ, flength)")
@@ -176,90 +176,71 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
             print(peak_power)
             return peak_power*power_condition
         """
-        # Get values
-        
+        # Get values    
         λ = Main.λ
         Iλ = Main.Iλ
         Iλ=Iλ.reshape(len(Iλ),)
-
         omega = Main.ω
         Eomega = Main.Eω  
-        if function==max_intens_integral:
-            return function(λ, Iλ, wavel_bounds)*power_condition
 
-        elif function ==max_peak_power_FT or function==max_peak_power_300nm or function==max_peak_power_300nm_envelope or function==max_peak_power_300nm_quadratic_phase or function==max_peak_power_1300nm_quadratic_phase or function==max_peak_power_1200nm_quadratic_phase or function==max_peak_power_1300nm or function==max_peak_power_1200nm or function==max_peak_power_200nm_quadratic_phase:
-            return function(omega, Eomega)
+        # Pass output from Luna into the subtarget function
+        if subtarget_analysis == "w":
+            return function(λ, Iλ, wavel_bounds)*power_condition
+        elif subtarget_analysis == "f":
+            return function(omega, Eomega)*power_condition
         else:
-            return function(λ, Iλ)#*power_condition #pass t and E to sub-target function
-        
+            raise ValueError("subtarget_analysis value is invalid. Must choose 'f' for frequency analysis or 'w' for wavelength analysis.")
+
+    # Make pbounds dictionary 
     if parameter_bounds == None:
-        # Make pbounds dictionary
         pbounds = {}
         for i in params:
             #assume standard bounds
             if 'energy' in i:
-                #pbounds[i] = (0,1e-3)
-                #pbounds[i] = (0.1e-3,2.0e-3)
                 pbounds[i] = (0.5e-3, 1.5e-3)
-                #pbounds[i] = (0.5e-3, 0.8e-3)
-
             elif 'FWHM' in i:
-                #pbounds[i] = (20e-15,50e-15)
-                #pbounds[i] = (4e-15, 30e-15)
                 pbounds[i] = (20e-15, 35e-15)
             elif 'λ0' in i:
                 pbounds[i] = (700e-9,900e-9)
             elif 'pressure' in i:
-                #pbounds[i] = (0,3)
-                #pbounds[i] = (1,15)
-                #pbounds[i] = (1, 10)
-                #pbounds[i] = (0.5, 3.5)
                 if params_dict["gas_str"]=="He":
                     pbounds[i]=(0.66*1.0,8.0*0.66)
-
                 if params_dict['gas_str']=="Ar":
                     pbounds[i] = (0.66*0.6, 0.66*1.5)
-        
                 elif params_dict['gas_str']=="Ne":
                     pbounds[i] = (0.66*3.0, 0.66*3.5)
-
-
+                else:
+                    pbounds[i]=(0.66*1.0,8.0*0.66)
             elif 'radius' in i:                
-                #pbounds[i] = (125e-6,300e-6)
                 pbounds[i] = (50e-6, 500e-6)
             elif 'flength' in i:
-                #pbounds[i] = (1,2)
                 pbounds[i] = (0.1, 10)
             elif 'grating_pair_displacement' in i:
-                #pbounds[i] = (-0.5e-3, 0.5e-3)
-                #pbounds[i] = (-0.5e-3, 0.5e-3)
                 pbounds[i] = (-0.5e-3, 0.5e-3)
     else:
         pbounds = parameter_bounds
 
     print(pbounds)
 
+    # Now create BO with the defined target function
     optimizer = BayesianOptimization(
-        #now create BO with the defined target function
         f=target_func,
         pbounds=pbounds,
         verbose=2, # verbose = 1 prints only when a maximum is observed, verbose = 0 is silent
         random_state=1,
         )
 
-    #probe spm optimum
+    # Probe theoretically predicted SPM optimum
     if params_dict['gas_str']=="Ar":
         optimizer.probe(params={"energy": 1.1e-3, "pressure": 0.66*1.0, "grating_pair_displacement":0.0},lazy=True,)
         #optimizer.probe(params={"grating_pair_displacement":0.0},lazy=True,)
-
-
     elif params_dict['gas_str']=="Ne":
         optimizer.probe(params={"energy": 1.1e-3, "pressure": 0.66*3.5, "grating_pair_displacement":0.0},lazy=True,)
         #optimizer.probe(params={"grating_pair_displacement":0.0},lazy=True,)
 
 
     optimizer.maximize(
-        #maximises the target function output. In the case of the rms error functions, this is a minimisation because the errors are multiuplied by -1
+        #maximises the target function output. In the case of the RMS error functions, this is a minimisation because the errors are multiuplied by -1
         init_points=init_points,
         n_iter=n_iter,
         #acq="ucb", 
@@ -346,19 +327,20 @@ def Luna_BO(params, initial_values_HCF, function, Gaussian = False, ImperialLab 
         Et_allz=Main.Et #array of Et at all z 
         Et=Et_allz[:,-1] #last item in each element is pulse shape at the end
         Et0=Et_allz[:,0]
+
         plt.figure()
         plt.plot(λ*10**9,Iλ)
         plt.xlabel("Wavelength (nm)")
-        plt.ylabel("Spectral energy density (J/m)")
-
+        plt.ylabel("Spectral Energy Density (J/m)")
+        plt.title('Output Spectrum from the Fibre produced by Optimal Parameters')
 
         plt.figure()
-        plt.plot(t,Et,label="z=1m")
-        plt.plot(t,Et0,label="z=0m")
-        plt.xlabel("time,s")
-        plt.ylabel("Electric field, a.u.")
+        plt.plot(t,Et,label="Output Pulse")
+        plt.plot(t,Et0,label="Input Pulse")
+        plt.xlabel("Time (s)")
+        plt.ylabel("Electric Field (a.u.)")
+        plt.title('Input and Output Pulses in the Time Domain')
         plt.legend()
         plt.show()
-        
 
     return optimizer.max, optimizer.res
