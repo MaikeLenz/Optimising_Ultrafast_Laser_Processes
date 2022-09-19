@@ -34,7 +34,7 @@ c = 299792458 # m/s
 
 def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50, subtarget_analysis = "f", 
     Gaussian = False, ImperialLab = False, parameter_bounds = None, 
-    t = np.linspace(-20,100,20000), plotting = True, wavel_bounds = None,
+    plotting = True, wavel_bounds = None,
     record_iterations = False, save_path = None):     
     """
     performs BO with params as specified as strings in params input (params is list of strings) on the HCF.
