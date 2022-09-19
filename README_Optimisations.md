@@ -22,6 +22,8 @@ This takes the following arguments:
 - **parameter_bounds**. If None, default parameter bounds are used which are defined in optimisation_function.py. If true, the selected bounds are used instead. Parameter bounds shoud be passed as a dictionary with a string of the parameter name and a tuple of the lower and upper bounds. This is optional, the default is None. 
 - **plotting**. This is a boolean. If true, the optimised spectrum will be plotted. This is optional, the default is true.
 - **wavel_bounds**. The wavelength bounds in m for optimisations where a certain wavelength window is to be filtered out. This is optional, the default is None.
+- **record_iterations**. This is a boolean. If true, the probed parameter values and output target value of the target function in each iteration will be saved. This is optional, the default is false.
+- **save_path**. If record_iterations is true, a filepath needs to be provided here to save the iteration data.  
 
 Inside the Luna_BO function, a native target function is defined which will return the value to be optimised. This is essentially just the subtarget function that was selected but with the correct arguments.
 

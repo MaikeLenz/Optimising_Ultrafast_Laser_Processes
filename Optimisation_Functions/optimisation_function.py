@@ -23,6 +23,7 @@ import sys
 path_to_repo='C:\\Users\\iammo\\Documents\\Optimising_Ultrafast_Laser_Processes\\'
 #path_to_repo='D:\\HiDrive\\users\\maikelenz\\docs\\MSci_FinalCode\\Optimising_Ultrafast_Laser_Processes\\'
 
+#import necessary functions
 sys.path.append(path_to_repo+'Optimisation_Functions\\')
 sys.path.append(path_to_repo+'Tools\\')
 from pulse_with_GDD import *
@@ -32,6 +33,7 @@ from compressor_grating_to_values import *
 ##############################################################################################################################
 c = 299792458 # m/s
 
+#here starts th eoptimisation function
 def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50, subtarget_analysis = "f", 
     Gaussian = False, ImperialLab = False, parameter_bounds = None, 
     plotting = True, wavel_bounds = None,
