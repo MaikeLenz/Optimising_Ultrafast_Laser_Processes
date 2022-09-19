@@ -45,7 +45,7 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
     plots input&output spectrum
     initial_values_HCF = [radius, flength, gas, pressure, λ0, τfwhm, energy] # array of initial values for Luna simulation, could change this to input actual Luna simulation
     """ 
-    # Start by assigning values to Luna simulation
+    # Start by assigning initial values to Luna simulation
     Main.using("Luna")
     
     Main.radius = initial_values_HCF[0]
@@ -58,8 +58,10 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
     Main.τfwhm = initial_values_HCF[6]
     grating_pair_displacement = initial_values_HCF[7]
 
+    #now we create a dictionary that keeps track of the parameters and their values during the optimisation
+    #for now this is just the initial values
     args_BO = {} #this dictionary will contain only the parameters we want to vary here
-    params_dict={}
+    params_dict={} #this dictionary contains all parameters
     params_dict['radius'] = initial_values_HCF[0]
     params_dict['flength'] = initial_values_HCF[1]
     params_dict['gas_str'] = initial_values_HCF[2]
@@ -69,6 +71,8 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
     params_dict['FWHM'] = initial_values_HCF[6]
     params_dict['grating_pair_displacement'] = initial_values_HCF[7]
 
+    #now we go through the parameters that were given to the optimisation function as "to-be-varied" in the params list
+    #if the parameter in question is valid and matches a parameter in params_dict, it will be added to args_BO
     for i in params:
         if i in params_dict:
             args_BO[i] = params_dict[i] #append parameters to be varied to dictionary
@@ -79,6 +83,7 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
         this is the target function of the optimiser. It is created as a nested function to take only the desired variables as inputs.
         It will consist of one of the sub-target functions in the subtarget function file or one of the rms error functions in ErrorCorrection_integrate.
         """
+        #update args_BO and params_dict 
         for i in range(len(params)):
             args_BO[params[i]] = args[params[i]]
             params_dict[params[i]]=args[params[i]]
@@ -100,16 +105,17 @@ def Luna_BO(params, initial_values_HCF, function, init_points = 50, n_iter = 50,
             elif 'grating_pair_displacement' in key:
                 grating_pair_displacement = value
 
-        # Critical power condition
+        # evaluate the critical power condition in the fibre to ensure a physically meaningful simulation
         Main.eval('ω = PhysData.wlfreq(λ0)')
         Main.eval('_, n0, n2  = Tools.getN0n0n2(ω, gas; P=pressure)')
         Main.eval('Pcrit = Tools.Pcr(ω, n0, n2)')
         Pcrit = Main.Pcrit
         Pmin = 0
+        #compute the power in the pulse and make sure it is smaller than Pcrit which is the maximum value from Luna
         τfwhm = Main.τfwhm
         tau = τfwhm/(2*np.sqrt(np.log(2)))
         P = Main.energy/(np.sqrt(np.pi)*tau)
-        power_condition = int(Pmin <= P <= Pcrit)
+        power_condition = int(Pmin <= P <= Pcrit) #0 if situation not physical, 1 if physical according to power condition
 
     
         if Gaussian == False:
